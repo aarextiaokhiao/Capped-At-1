@@ -246,7 +246,8 @@ h3 {
     height: calc(100% - 16px);
     background-color: #555;
     border: solid black;
-    border-width: 3px 0;
+    border-width: 3px 3px 3px 0;
+    border-radius: 0 15px 15px 0;
 
     font-size: 14px;
     transition: background-color 0.25s;
@@ -288,28 +289,6 @@ h3 {
     font-size: 30px;
 
     cursor: pointer;
-}
-
-.research-upg-div > .charge_btn {
-    position: absolute;
-    top: 0;
-    left: 100%;
-    padding: 0;
-    margin: 0;
-
-    background-color: cyan;
-
-    border: solid 3px black;
-    border-radius: 0 15px 15px 0;
-
-    color: white;
-    font-size: 20px;
-
-    cursor: pointer;
-}
-
-.research-upg-div > .charge_btn.charged {
-    background-color: red;
 }
 
 .research-upg-div > div.afford {

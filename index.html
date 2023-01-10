@@ -63,10 +63,8 @@
                     gives <h3>{{ tmp.totalResearch.format(0) }}</h3> Research Points.<br><br>
 
                     You have <b>{{ tmp.unspentResearch.format(0) }}</b> unspent research points.<br>
-                    You have purchased <b>{{ player.res_upgs.length }}</b> research upgrade, which increases the cost by <b>{{ formatMult(tmp.resUpgs.scale) }}</b>.<br><br>
                     
                     <button onclick="respecResearch()">Respec the upgrades</button>
-                    <div v-if="tmp.charger_upgrade>0">You have {{ tmp.charger_upgrade-player.res_charge.length }} Upgrade Charger.</div>
 
                     <br><div class="table_center">
                         <div v-for="x in RES_UPGS.length">
@@ -79,31 +77,28 @@
                                         Cost: {{ player.res_upgs.includes(x-1) ? player.res_spent[x-1].format(0) : tmp.resUpgs.cost[x-1].format(0) }} Research Points
                                     </div>
                                 </div>
-                                <button :class="{locked: (tmp.charger_upgrade <= player.res_charge.length && !player.res_charge.includes(x-1)) || !RES_UPGS[x-1].charged, charged: player.res_charge.includes(x-1)}" @click="chargeResearchUpg(x-1)" class="charge_btn">🗲</button>
                             </div>
                         </div>
                     </div>
                 </div><div v-if="tmp.tab == 'double'">
-                    You have <h3>{{ format(player.double,0) }}</h3> Double Compacted Box, which makes Compacted Box's penalty <h3>{{ formatPercent(tmp.double_penalty[0]-1,1) }}</h3> stronger and
-                    reduces the formula by <h3>/{{ format(tmp.double_penalty[1],1) }}</h3>.
+                    You have <h3>{{ format(player.double,0) }}</h3> Double Compacted Box, which scales Compacted Boxes <h3>{{ formatMult(tmp.double_penalty) }}</h3> faster.
                     <br><br>
-                    (Π[ψ×Σb<sub>i</sub>+1])<sup>{{ player.double }}×Π[ψ×Σp<sub>i</sub>+1]</sup> = <b>{{ formatMult(tmp.charge_formula) }}</b> to normal production. <span v-html="tmp.charge_formula.softcapHTML(tmp.double_formula_ss)"></span><br>
-                    ψ = {{ format(tmp.double_psi) }}
+                    <b>{{ formatMult(tmp.charge_eff) }}</b> to Points.
                     <br><br>
                     <div>
-                        <div class="table_center" v-for="y in tmp.charge_len[0]">
-                            <div v-for="x in tmp.charge_len[1]" class="charge-btn"
-                            :class="{choosed: player.charge_ch == y+''+x}"
+                        <div class="table_center" v-for="y in tmp.charge_size[0]">
+                            <div v-for="x in tmp.charge_size[1]" class="charge-btn"
+                            :class="{choosed: MAIN.charger.touched(y+''+x)}"
                             @click="player.charge_ch = player.charge_ch == y+''+x ? '' : y+''+x"
                             :style="{'--percent': player.charge[y-1][x-1]*100+'%'}">
                                 <div>
-                                    {{ player.charge[y-1][x-1].toFixed(3) + (player.charge_ch == y+''+x ? "⯅" : "⯆") }}
+                                    {{ player.charge[y-1][x-1].toFixed(3) + (MAIN.charger.touched(y+''+x) ? "⯅" : "⯆") }}
                                 </div>
                             </div><div class="charge-row-info">
                                 <div>b<sub>{{ y }}</sub></div>
                             </div>
                         </div><div class="table_center">
-                            <div class="charge-column-info" v-for="x in tmp.charge_len[1]">
+                            <div class="charge-column-info" v-for="x in tmp.charge_size[1]">
                                 <div>p<sub>{{ x }}</sub></div>
                             </div><div style="width: 40px"></div>
                         </div>
@@ -125,11 +120,11 @@
                         Selling upgrade drains box automatically. Each <b>Research Upgrade</b> has only one level.
                     </div><div v-if="player.double_unl">
                         <h2>Double Compacted Box</h2>
-                        When reaching 12 <b>Compacted Box</b> at first time, you’ll unlock <b>Double Compacted Box</b>, which requires the formula that defined by <b>Compacted Box</b>.
-                        But it resets all previous features, reduces the formula and makes <b>Compacted Box</b> stronger.
+                        When reaching 10 <b>Compacted Boxes</b> at first time, you’ll unlock <b>Double Compacted Box</b>, which requires the formula that defined by <b>Compacted Box</b>.
+                        But it resets all previous features and makes <b>Compacted Box</b> stronger.
                         <h2>Charge Core</h2>
                         When unlocking Double Compacted Box, you’ll unlock <b>Charge Core</b>.
-                        It contains 4 <b>Chargers</b> (2 columns and 2 rows), you may upgrade them when reaching something else.
+                        It contains 1 <b>Charger</b> (1 column and 1 row), you may upgrade them when reaching something else.
                         You choose any charger, then it’s activated, and others will be inactive.
                         If you click again, will inactive. Active charger increases its amount each second, capped at 1, and inactive – decreases, but slower than active.<br><br>
                         Each row of charge core increases its base, and each column – its power. The formula, that defined by bases and powers, shows in tab.

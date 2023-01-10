@@ -14,11 +14,6 @@ function resetTemp() {
             effect: [],
         },
 
-        double_penalty: [1,1],
-        charge_len: [2,2],
-
-        charger_upgrade: 0,
-
         tab: 'box',
     }
 }

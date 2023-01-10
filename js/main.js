@@ -12,36 +12,16 @@ const MAIN = {
     gain() {
         let x = E(1)
 
-        if (hasResearchUpg(0)) x = x.mul(researchUpgEff(0))
+        if (hasResearchUpg(0)) x = x.mul(2)
         if (hasResearchUpg(1)) x = x.mul(researchUpgEff(1))
+        if (hasResearchUpg(2)) x = x.mul(researchUpgEff(2))
 
-        x = x.mul(tmp.charge_formula)
-
-        if (hasResearchUpg(8)) x = x.pow(chargedResUpg(8)?1.5:1.25)
+        x = x.mul(tmp.charge_eff)
 
         return x.div(10).div(tmp.penalty)
     },
     penalty() {
-        let b = player.reset
-
-        let q = chargedResUpg(11) && hasResearchUpg(11)
-
-        if (b > 100) b = (b/100)**4*100
-
-        if (b > 50) b = (b/50)**(q?2.5:3)*50
-
-        if (b > 10) b = (b/10)**(q?1.75:2)*10
-
-        if (hasResearchUpg(2)) b -= researchUpgEff(2,0)
-        if (hasResearchUpg(9)) b -= researchUpgEff(9,0)
-
-        b *= tmp.double_penalty[0]
-
-        let x = Decimal.pow(10,b**(hasResearchUpg(11)?1.4:1.5))
-
-        if (hasResearchUpg(15)) x = expMult(x,0.8)
-
-        return x
+        return E(2).pow(player.reset * tmp.double_penalty)
     },
     progress() {
         if (player.p.lte(0)) return 0
@@ -52,9 +32,7 @@ const MAIN = {
     researchSet() {
         let b = 2
 
-        if (hasResearchUpg(3)) b += researchUpgEff(3,0)
-
-        let x = E(player.reset*b)
+        let x = E(player.reset*2+Math.max(player.double-4,0))
 
         return x.max(0).round()
     },
@@ -85,7 +63,7 @@ function finishBox() {
         player.box_unl = true
 
         player.p = E(0)
-        if (player.double < 3) player.p_time = 0
+        if (player.double < 2) player.p_time = 0
         player.reset++
 
         tmp.pass = false

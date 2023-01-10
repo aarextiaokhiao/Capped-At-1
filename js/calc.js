@@ -1,21 +1,8 @@
 function calc(dt) {
     if (tmp.pass) {
+        if (player.double) MAIN.charger.calc(dt)
+
         player.p = player.p.add(tmp.pGain.mul(dt)).min(1)
-
-        let s = 300
-        if (player.double >= 5) s *= 4
-        if (player.double >= 7) s *= 5
-
-        let nd = player.double >= 9
-
-        for (let y = 0; y < tmp.charge_len[0]; y++) for (let x = 0; x < tmp.charge_len[1]; x++) {
-            let yy = y+1, xx = x+1
-
-            let c = player.charge[y]
-
-            c[x] = player.charge_ch == yy+""+xx ? Math.min(1, c[x] + dt/10) : nd ? c[x] : Math.max(0,c[x] - dt/s)
-        }
-
         if (player.double >= 6) finishBox()
     }
 

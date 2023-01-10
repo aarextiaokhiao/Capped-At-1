@@ -12,7 +12,6 @@ function loadVue() {
                 RES_UPGS,
                 buyResearchUpg,
                 revertResearchUpg,
-                chargeResearchUpg,
                 formatMult,
                 formatPercent,
             }
