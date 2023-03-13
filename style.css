@@ -7,6 +7,7 @@
     --hexagon-path: 50% 0, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%;
     --progress-box: 0%;
     --progress-box2: 0%;
+    --progress-box3: 0%;
 }
 
 * {
@@ -149,24 +150,43 @@ h3 {
     background-color: #003;
 }
 
+#box3.hex-progress::after {
+    height: var(--progress-box3);
+    background-color: #303;
+}
+
 .hex-progress.capped {
     cursor: pointer;
 }
 
+#hex-btn1.ready,
 .hex-progress.capped::after {
     background-color: green;
 }
 
+#hex-btn2.ready,
 #box2.hex-progress.capped::after {
     background-color: #0066ff;
 }
 
+#hex-btn3.ready,
+#box3.hex-progress.capped::after {
+    background-color: #9900ff;
+}
+
+#hex-btn1.ready:hover,
 .hex-progress.capped:hover::after {
     background-color: #00cc00;
 }
 
+#hex-btn2.ready:hover,
 #box2.hex-progress.capped:hover::after {
     background-color: #3388ff;
+}
+
+#hex-btn3.ready:hover,
+#box3.hex-progress.capped:hover::after {
+    background-color: #ad33ff;
 }
 
 .hex-progress > div {
@@ -372,6 +392,14 @@ button.tab-btn {
     z-index: 1;
     font-size: 24px;
     pointer-events: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.charge-btn > div > img {
+    width: 32px;
+    height: 32px;
 }
 
 .charge-row-info {
@@ -409,4 +437,116 @@ button.tab-btn {
 
 .double-milestone.reached {
     background-color: #030;
+}
+
+.glyph-div {
+    margin: 6px 0;
+    padding: 8px 16px;
+    background-color: #aa7700;
+    border: solid 3px #730;
+}
+
+.glyph-div > button {
+    margin: 20px 0;
+    margin-right: 10px;
+    padding: 5px 12px;
+    font-size: 48px;
+    background-color: #ff8;
+    border: outset 5px #730;
+    border-radius: 0;
+}
+
+.glyph-div > button:active {
+    border-style: inset;
+}
+
+.glyph-div > div {
+    width: 400px;
+}
+
+.glyph-bar {
+    position: relative;
+
+    width: 100%;
+    height: 36px;
+    margin: 10px 0;
+    background-color: #444;
+}
+
+.glyph-bar > div {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    z-index: 1;
+    width: 100%;
+    font-size: 20px;
+}
+
+.glyph-bar::after {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: var(--percent);
+    background-color: #ffa;
+    transition: width 0.25s;
+
+    content: "";
+}
+
+.simple-hex-btns {
+    width: 100%;
+    display: flex;
+}
+
+.simple-hex-btns > button {
+    width: 100%;
+    height: 60px;
+    margin: 0;
+    cursor: default;
+    transition: background-color 0.25s;
+}
+
+.simple-hex-btns > button.ready {
+    cursor: pointer;
+}
+
+.simple-hex-btns > button.ready > span {
+    display: none;
+}
+
+#hex-btn1 {
+    background-color: #333;
+}
+
+#hex-btn2 {
+    background-color: #003;
+}
+
+#hex-btn3 {
+    background-color: #303;
+}
+
+#app {
+    transition-duration: 12s;
+}
+
+#app.end {
+    pointer-events: none;
+    opacity: 0;
+    transform: scale(2,0) rotate(270deg);
+}
+
+#end-page {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+#end-page > div {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }

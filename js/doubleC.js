@@ -1,20 +1,16 @@
 MAIN.double = {
 	formula() {
-		let r = player.reset
+		let x = 10
+		x += Math.sqrt(player.double) / 2
 
-		let x = Math.min(1,r/10)
-
-		return x
-	},
-	progress() {
-		return tmp.double_formula
+		return player.reset / x
 	},
 	penalty() {
 		return (player.double / 10 + 1) ** 0.5
 	},
 
 	reset() {
-		if (tmp.double_formula >= 1) {
+		if (tmp.b2.formula >= 1) {
 			player.double_unl = true
 			player.double++
 			this.doReset()
@@ -59,30 +55,26 @@ MAIN.double = {
 
 MAIN.charger = {
 	calc(dt) {
-		for (let y = 0; y < tmp.charge_size[0]; y++) for (let x = 0; x < tmp.charge_size[1]; x++) {
+		for (let y = 0; y < tmp.b2.ch.size[0]; y++) for (let x = 0; x < tmp.b2.ch.size[1]; x++) {
 			let yy = y+1, xx = x+1
-
 			let c = player.charge[y]
-
 			c[x] = MAIN.charger.touched(yy+''+xx) ? Math.min(1, c[x] + dt/5) : Math.max(0,c[x] - dt/200)
 		}
 	},
 	effect() {
 		let r = E(1)
-		for (let y = 0; y < tmp.charge_size[0]; y++) {
+		for (let y = 0; y < tmp.b2.ch.size[0]; y++) {
 			let ry = E(1)
-			for (let x = 0; x < tmp.charge_size[1]; x++) ry = ry.add(player.charge[y][x])
+			for (let x = 0; x < tmp.b2.ch.size[1]; x++) ry = ry.add(player.charge[y][x])
 			r = r.mul(ry)
 		}
 		return r
 	},
 	touched(loc) {
-		let y = Math.floor(loc / 10), x = loc % 10, sel = tmp.charge_sel
-
+		let y = Math.floor(loc / 10), x = loc % 10, sel = tmp.b2.ch.sel
 		let c = player.charge_ch
 		let cy = Math.floor(c / 10), cx = c % 10
 		if (c == "") return
-
 		return (y >= cy && y <= cy + sel[0] - 1) &&
 			(x >= cx && x <= cx + sel[1] - 1)
 	}
@@ -90,19 +82,20 @@ MAIN.charger = {
 
 tmp_update.push(()=>{
 	let md = MAIN.double
+	let td = tmp.b2
 
-	tmp.double_penalty = md.penalty()
-	tmp.double_formula = md.formula()
-	tmp.double_progress = md.progress()
+	td.penalty = md.penalty()
+	td.formula = md.formula()
 
 	//Charger
-	tmp.charge_size = [1,1]
-	if (player.double >= 3) tmp.charge_size = [2,2]
-	if (player.double >= 7) tmp.charge_size = [2,3]
+	let cd = td.ch
+	cd.size = [1,1]
+	if (player.double >= 3) cd.size = [2,2]
+	if (player.double >= 7) cd.size = [2,3]
 
-	tmp.charge_sel = [1,1]
-	if (player.double >= 4) tmp.charge_sel = [1,2]
-	if (player.double >= 8) tmp.charge_sel = [2,2]
+	cd.sel = [1,1]
+	if (player.double >= 4) cd.sel = [1,2]
+	if (player.double >= 8) cd.sel = [2,2]
 
-	tmp.charge_eff = MAIN.charger.effect()
+	cd.eff = MAIN.charger.effect()
 })

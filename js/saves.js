@@ -91,14 +91,21 @@ function getPlayerData() {
         charge: [],
         charge_ch: '',
 
+        triple: 0,
+
+        glyph_level: [0,0,0,0],
+        glyph_eq: [0,0,0,0],
+        glyph: [E(0),E(0),E(0),E(0)],
+
         box_unl: false,
         double_unl: false,
+        triple_unl: false,
 
         time: 0,
     }
-    for (let x = 0; x < 4; x++) {
+    for (let x = 0; x < 5; x++) {
         let p = []
-        for (let y = 0; y < 4; y++) p.push(0)
+        for (let y = 0; y < 5; y++) p.push(0)
         s.charge[x] = p
     }
     return s
@@ -154,7 +161,7 @@ function convertStringToDecimal() {
     for (let x = 0; x < player.res_spent.length; x++) player.res_spent[x] = E(player.res_spent[x])
 }
 
-function cannotSave() { return false }
+function cannotSave() { return tmp.end }
 
 function save(){
     let str = btoa(JSON.stringify(player))

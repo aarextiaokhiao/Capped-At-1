@@ -14,6 +14,7 @@ function loadVue() {
                 revertResearchUpg,
                 formatMult,
                 formatPercent,
+                GLYPH_LEN,
             }
         },
         mounted() {

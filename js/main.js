@@ -16,12 +16,14 @@ const MAIN = {
         if (hasResearchUpg(1)) x = x.mul(researchUpgEff(1))
         if (hasResearchUpg(2)) x = x.mul(researchUpgEff(2))
 
-        x = x.mul(tmp.charge_eff)
+        x = x.mul(tmp.b2.ch.eff)
+
+        //x = x.pow(tmp.glyph.eff[0])
 
         return x.div(10).div(tmp.penalty)
     },
     penalty() {
-        return E(2).pow(player.reset * tmp.double_penalty)
+        return E(2).pow(player.reset * tmp.b2.penalty)
     },
     progress() {
         if (player.p.lte(0)) return 0
@@ -39,9 +41,18 @@ const MAIN = {
 }
 
 el.update.main = _=>{
+    document.getElementById('app').className = tmp.end ? "end" : ""
+
+    document.getElementById('app').style.display = tmp.end_time < 12 ? '' : 'none'
+    document.getElementById('end-page').style.display = tmp.end_time >= 12 ? '' : 'none'
+
+    document.getElementById('total-time').innerHTML = formatTime(player.time)
+
     document.documentElement.style.setProperty('--progress-box', (tmp.progress*100)+'%');
 
-    document.documentElement.style.setProperty('--progress-box2', (tmp.double_progress*100)+'%');
+    document.documentElement.style.setProperty('--progress-box2', (tmp.b2.formula*100)+'%');
+
+    document.documentElement.style.setProperty('--progress-box3', (tmp.b3.formula*100)+'%');
 }
 
 tmp_update.push(_=>{

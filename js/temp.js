@@ -14,7 +14,24 @@ function resetTemp() {
             effect: [],
         },
 
+		b2: {
+			ch: {}
+		},
+		b3: {
+			glyph: {
+				len: 3,
+				total: 0,
+				unspent: 0,
+				gain: [],
+				eff: [],
+			},
+		},
+
+
         tab: 'box',
+
+        end: false,
+        end_time: 0,
     }
 }
 
