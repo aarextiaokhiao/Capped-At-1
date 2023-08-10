@@ -11,7 +11,7 @@ const RES_UPGS = [
 			let p = player.p
 			if (hasResearchUpg(5)) p = p.mul(4)
 
-			let r = E(2).mul(player.p.min(1))
+			let r = E(2).mul(p.min(1))
 			if (hasResearchUpg(4)) r = r.mul(2)
 			r = r.add(1)
 			if (hasResearchUpg(3)) r = r.pow(researchUpgEff(3))
@@ -23,7 +23,10 @@ const RES_UPGS = [
         desc: `Compacted Box's reset time boosts <b>Points</b>.`,
         cost: E(2),
         effect() {
-            return E(player.p_time).div(10).add(1).cbrt()
+            let r = E(player.p_time).div(10).add(1).cbrt()
+			if (hasResearchUpg(7)) r = r.pow(researchUpgEff(7))
+			r = r.pow(glyphEff(3))
+			return r
         },
         effDesc: x=>formatMult(x),
     },{
@@ -31,7 +34,7 @@ const RES_UPGS = [
         desc: `Compacted Box raises <b>2nd Research Upgrade</b>.`,
         cost: E(4),
         effect() {
-            return E(player.reset/4)
+            return E(player.reset/4).max(1)
         },
         effDesc: x=>"^"+format(x),
     },{
@@ -42,6 +45,18 @@ const RES_UPGS = [
         unl: ()=>player.reset>=6,
         desc: `Points boost 2nd Research Upgrade as you had <b>4x</b> more.`,
         cost: E(3)
+    },{
+        unl: ()=>player.double>=5,
+        desc: `Chargers always multiply their effect.`,
+        cost: E(5)
+    },{
+        unl: ()=>player.double>=5,
+        desc: `Compacted Box raises <b>3rd Research Upgrade</b>.`,
+        cost: E(5),
+        effect() {
+            return E(player.reset/4).sub(1).max(1)
+        },
+        effDesc: x=>"^"+format(x),
     }
 ]
 

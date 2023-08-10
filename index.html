@@ -34,7 +34,7 @@
 				<div style="overflow-y: scroll; width: 100%; height: 100%;">
 					<div class="simple-hex-btns">
 						<button id="hex-btn1" onclick="finishBox()" :class="{ready: player.p.gte(1)}">Box<br><span v-if="player.double<6">Not</span> Ready {{ player.double>=6?"(Auto)":"" }}</button>
-						<button id="hex-btn2" v-if="player.reset >= 8 || player.double_unl" onclick="MAIN.double.reset()" :class="{ready: tmp.b2.formula >= 1}">Double<br><span v-if="player.triple<3">Not</span> Ready {{ player.triple>=3?"(Auto)":"" }}</button>
+						<button id="hex-btn2" v-if="player.reset >= 8 || player.double_unl" onclick="MAIN.double.reset()" :class="{ready: tmp.b2.formula >= 1}">Double<br><span v-if="player.triple<4">Not</span> Ready {{ player.triple>=4?"(Auto)":"" }}</button>
 						<button id="hex-btn3" v-if="player.double >= 8 || player.triple_unl" onclick="MAIN.triple.reset()" :class="{ready: tmp.b3.formula >= 1}">Triple<br><span>Not</span> Ready</button>
 					</div><br><div class="hex">
 						<div class="hex-progress" id="box1" :class="{capped: player.p.gte(1)}" onclick="finishBox()">
@@ -129,23 +129,20 @@
 						</div>
 					</div>
 					<div v-if="tmp.tab == 'triple'">
-						You have <h3>{{ format(player.triple,0) }}</h3> Triple Compacted Box, which:
-						<br>Makes Double Compacted Box's penalty <h3>{{ formatPercent(tmp.b3.penalty[0]-1,1) }}</h3> stronger;
-						<br>Adds <h3>{{ format(tmp.b3.penalty[1],0) }}</h3> base to Double Compacted Box's penalty <i>(after scaling)</i>;
-						<br>Adds <h3>{{ format(tmp.glyph.total,0) }}</h3> Ancient Glyph.
+						You have <h3>{{ format(player.triple,0) }}</h3> Triple Compacted Box, which scales Double Compacted Boxes <h3>^{{ format(tmp.b3.penalty) }}</h3> faster, and adds <h3>{{ format(tmp.b3.glyph.total,0) }}</h3> Ancient Glyph.
 						<br><br>
-						You have <b>{{ format(tmp.glyph.unspent,0) }}</b> Unassigned Ancient Glyph.
+						You have <b>{{ format(tmp.b3.glyph.unspent,0) }}</b> Unassigned Ancient Glyph.
 						<div>
-							<div v-for="x in tmp.glyph.len" class="table_center">
+							<div v-for="x in tmp.b3.glyph.len" class="table_center">
 								<div class="glyph-div table_center">
-									<button @click="MAIN.triple.addGlyph(x-1,1)">{{ MAIN.triple.glyph_name[x-1][0] }}</button>
-									<button @click="MAIN.triple.addGlyph(x-1,-1)" style="background-color: red;">X</button>
+									<button @click="MAIN.glyph.addGlyph(x-1,1)">{{ MAIN.glyph.glyph_name[x-1][0] }}</button>
+									<button @click="MAIN.glyph.addGlyph(x-1,-1)" style="background-color: red;">X</button>
 									<div>
-										<h3>{{ MAIN.triple.glyph_name[x-1][1] }}</h3> [Level {{ format(player.glyph_level[x-1],0) }}] [{{ format(player.glyph_eq[x-1],0) }} Activated]
+										<h3>{{ MAIN.glyph.glyph_name[x-1][1] }}</h3> [Level {{ format(player.glyph_level[x-1],0) }}] [{{ format(player.glyph_eq[x-1],0) }} Activated]
 										<div class="glyph-bar" :style="{'--percent': player.glyph[x-1].min(1).mul(100).toNumber()+'%'}">
-											<div>{{ player.glyph[x-1].mul(100).format() }}% <span v-if="player.glyph_eq[x-1]>0">(+{{ tmp.glyph.gain[x-1].mul(100).format() }}%/s)</span></div>
+											<div>{{ player.glyph[x-1].mul(100).format() }}% <span v-if="player.glyph_eq[x-1]>0">(+{{ tmp.b3.glyph.gain[x-1].mul(100).format() }}%/s)</span></div>
 										</div>
-										<span v-html="MAIN.triple.glyph_eff[x-1][1](tmp.glyph.eff[x-1])"></span>
+										<span v-html="MAIN.glyph.glyph_eff[x-1][1](tmp.b3.glyph.eff[x-1])"></span>
 									</div>
 								</div>
 							</div>
@@ -202,11 +199,10 @@
 		</div>
 	</div><div id="end-page" style="display: none;">
 		<div>
-			<h1>Congratulations!</h1>
-			You have completed the game! Or you've escaped the <b>Project Claustrophobia</b>!<br>
-			You've been played <b id="total-time">???</b>!
-			<h2>Thanks For Playing!</h2>
-			<button onclick="wipe(true)">Play Again!</button>
+			<h1>You've escaped!</h1>
+			You've escaped the <b>Project Claustrophobia: Easy Mode</b>!<br>
+			Time: <b id="total-time">???</b><br>
+			<button onclick="wipe(true)">Start Over</button>
 		</div>
 	</div>
 </body>

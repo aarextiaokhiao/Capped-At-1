@@ -17,8 +17,7 @@ const MAIN = {
         if (hasResearchUpg(2)) x = x.mul(researchUpgEff(2))
 
         x = x.mul(tmp.b2.ch.eff)
-
-        //x = x.pow(tmp.glyph.eff[0])
+		x = x.mul(glyphEff(0))
 
         return x.div(10).div(tmp.penalty)
     },
@@ -74,7 +73,7 @@ function finishBox() {
         player.box_unl = true
 
         player.p = E(0)
-        if (player.double < 2) player.p_time = 0
+        if (player.double < 3) player.p_time = 0
         player.reset++
 
         tmp.pass = false

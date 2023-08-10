@@ -1,12 +1,12 @@
 MAIN.triple = {
 	formula() {
 		let x = 10
-		x += Math.sqrt(player.triple) / 2
+		x += player.triple
 
 		return player.double / x
 	},
 	penalty() {
-		return (player.triple / 10 + 1) ** 0.5
+		return player.triple / 20 + 1
 	},
 
 	reset() {
@@ -29,19 +29,38 @@ MAIN.triple = {
 		}
 
 		MAIN.double.doReset(order)
-	}
+	},
+
+	milestone: [
+		{
+			r: 2,
+			desc: `<b>Charger Core</b> doesn't decrease. Double Compacted Boxes only reset Points.`,
+		},{
+			r: 3,
+			desc: `You can select all <b>Charger Cores</b>. Automate Compacted Boxes.`,
+		},{
+			r: 4,
+			desc: `Automate Double Compacted Boxes. Unlock the Ling glyph.`,
+		},{
+			r: 6,
+			desc: `Glyphs scale 2x faster.`,
+		},{
+			r: 8,
+			desc: `Su effect is better.`,
+		},{
+			r: 9,
+			desc: `The final stretch. No rewards for this.`,
+		},{
+			r: 10,
+			desc: `Escape and beat the game!`,
+		},
+	],
 }
 
 MAIN.glyph = {
 	get_glyph() {
-		let b = 3
-
-		if (player.triple>=9) b += 0.6
-
-		let r = player.triple
-
-		let x = Math.floor(Math.max(0,r*b))
-
+		let b = 1
+		let x = Math.floor(Math.max(0,player.triple*b))
 		return x
 	},
 
@@ -53,87 +72,37 @@ MAIN.glyph = {
 	],
 	glyph_gain(i) {
 		let g = player.glyph_eq[i]
-
-		if (g==0) return E(0)
+		if (g == 0) return E(0)
 
 		let l = player.glyph_level[i]
-
-		let x = Decimal.pow(10,g**1.25-2).div(i==3?1e9:(3+i)**i).div(Decimal.pow(2,l**1.1))
-
+		let x = E(3).pow((g - l) * (player.triple >= 6 ? .5 : 1)).div(20)
 		return x
 	},
 	glyph_eff: [
 		[
-			l=>{
-				let x = 1+l/5
-
-				if (l>50) x *= 1+(l-50)/2
-
-				return x
-			},
-			x=>"<b>^"+format(x,2)+"</b> to <b>Points</b> gain"
+			l=>l+1,
+			x=>"<b>"+format(x,1)+"x</b> to Points gain"
 		],[
-			l=>{
-				let x = 1+l/10
-
-				if (l>50) x *= 1+(l-50)/2
-
-				return x
-			},
-			x=>"<b>x"+format(x,2)+"</b> to <b>ψ</b> base"
+			l=>l/3+1,
+			x=>"<b>"+format(x,1)+"x</b> to Charger base row"
 		],[
-			l=>{
-				let x = player.triple >= 7 ? l**0.61/15 : l**0.5/15
-
-				return x
-			},
-			x=>"<b>+^"+format(x)+"</b> to <b>Double Compacted Box</b>'s claim formula"
+			l=>player.triple>=8?l/15:l/20,
+			x=>"<b>-"+format(x,2)+"x</b> to Double Compacted Box's penalty"
 		],[
-			l=>{
-				let x = player.triple >= 8 ? 1+l/80 : 1+l**0.9/90
-
-				return x
-			},
-			x=>"<b>x"+format(x)+"</b> to <b>Double Compacted Box</b>'s weakness"
+			l=>2-1/(l/20+1),
+			x=>"<b>^"+format(x,2)+"</b> to 3rd Research Upgrade"
 		],
 	],
 
 	addGlyph(i,a) {
-		if (a > 0 && tmp.glyph.unspent <= 0) return;
-
-		player.glyph_eq[i] = Math.max(0,player.glyph_eq[i]+a*(a>0?tmp.glyph.unspent:tmp.glyph.total))
+		let tt = tmp.b3.glyph
+		if (a > 0 && tt.unspent <= 0) return;
+		player.glyph_eq[i] = Math.max(0,player.glyph_eq[i]+a*(a>0?tt.unspent:tt.total))
 	},
+}
 
-	milestone: [
-		{
-			r: 2,
-			desc: `Start with 10 <b>Double Compacted Boxes</b>. Keep chargers on <b>Triple Compacted Box</b>. <b>Charge Core</b>'s active time is <b>10x</b> faster.`,
-		},{
-			r: 3,
-			desc: `Automate <b>Double Compacted Box</b>. Unlock new <b>Ancient Glyph</b>'s type.`,
-		},{
-			r: 4,
-			desc: `Keep <b>Research Upgrades</b> bought on <b>Double Compacted Box</b>.`,
-		},{
-			r: 5,
-			desc: `Add <b>1</b> to <b>Upgrade Charger</b> per <b>Triple Compacted Box</b>, starting at 4.`,
-		},{
-			r: 6,
-			desc: `First 2 <b>Research Upgrade</b> provides an exponential boost. <b>Li</b> boosts eighth <b>Research Upgrade</b>.`,
-		},{
-			r: 7,
-			desc: `<b>Su</b>'s effect is stronger.`,
-		},{
-			r: 8,
-			desc: `<b>Ling</b>'s effect is stronger.`,
-		},{
-			r: 9,
-			desc: `<b>Triple Compacted Box</b>'s bonus base is increased by <b>0.6</b>.`,
-		},{
-			r: 10,
-			desc: `Beat the game!`,
-		},
-	],
+function glyphEff(x, def = 1) {
+	return tmp.b3?.glyph.eff[x] ?? def
 }
 
 const GLYPH_LEN = MAIN.glyph.glyph_name.length
@@ -150,7 +119,7 @@ tmp_update.push(()=>{
 
 	tg.total = mg.get_glyph()
 	tg.len = 3
-	if (player.triple >= 3) tg.len++
+	if (player.triple >= 4) tg.len++
 
 	let s = 0
 	for (let i=0; i<GLYPH_LEN; i++) {
